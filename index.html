@@ -10,7 +10,7 @@
   .legend {
     background:rgba(255,255,255,.92); padding:6px 8px; line-height:1.5;
     border-radius:4px; box-shadow:0 0 8px rgba(0,0,0,.25);
-    font-size:11px; max-width:150px;
+    font-size:11px; max-width:160px;
   }
   .legend i {
     width:10px; height:10px; display:inline-block;
@@ -33,6 +33,21 @@ L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scal
   attribution: '高德地图'
 }).addTo(map);
 
+/* ===== 带序号标记的通用函数 ===== */
+function numberedMarker(lat, lng, color, num, popupHtml, radius){
+  radius = radius || 13;
+  var icon = L.divIcon({
+    className: '',
+    html: '<div style="width:'+(radius*2)+'px;height:'+(radius*2)+'px;border-radius:50%;'+
+          'background:'+color+';color:#fff;font-size:12px;font-weight:bold;'+
+          'line-height:'+(radius*2)+'px;text-align:center;'+
+          'border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.55);">'+num+'</div>',
+    iconSize: [radius*2, radius*2],
+    iconAnchor: [radius, radius]
+  });
+  return L.marker([lat, lng], {icon: icon}).addTo(map).bindPopup(popupHtml);
+}
+
 /* ========== 去程主干线（蓝） ========== */
 var goTrunk = [
   {name:"高邮 10.2 20:00 出发", lat:32.785, lng:119.443, note:"满电出发，走 G2 京沪高速"},
@@ -45,11 +60,9 @@ L.polyline(goTrunk.map(p=>[p.lat,p.lng]), {
   color:'#1e88e5', weight:5, opacity:0.85
 }).addTo(map);
 
-goTrunk.forEach(p => {
-  L.circleMarker([p.lat, p.lng], {
-    radius:7, color:'#1e88e5', fillColor:'#fff',
-    fillOpacity:1, weight:3
-  }).addTo(map).bindPopup('<b>'+p.name+'</b><br/>'+p.note);
+goTrunk.forEach(function(p, i){
+  numberedMarker(p.lat, p.lng, '#1e88e5', i+1,
+    '<b>去程第'+(i+1)+'站</b><br/>'+p.name+'<br/>'+p.note, 14);
 });
 
 /* ========== 返程主干线（紫） ========== */
@@ -66,14 +79,12 @@ L.polyline(backTrunk.map(p=>[p.lat,p.lng]), {
   color:'#8e24aa', weight:5, opacity:0.85, dashArray:'10,6'
 }).addTo(map);
 
-backTrunk.forEach(p => {
-  L.circleMarker([p.lat, p.lng], {
-    radius:7, color:'#8e24aa', fillColor:'#fff',
-    fillOpacity:1, weight:3
-  }).addTo(map).bindPopup('<b>'+p.name+'</b><br/>'+p.note);
+backTrunk.forEach(function(p, i){
+  numberedMarker(p.lat, p.lng, '#8e24aa', i+1,
+    '<b>返程第'+(i+1)+'站</b><br/>'+p.name+'<br/>'+p.note, 14);
 });
 
-/* ========== 每日市区景点 ========== */
+/* ========== 每日市区景点（带当天顺序号） ========== */
 var days = {
   day1: {
     color:'#e53935',
@@ -121,16 +132,7 @@ var days = {
 Object.keys(days).forEach(function(k){
   var d = days[k];
 
-  d.points.forEach(function(p){
-    L.circleMarker([p.lat, p.lng], {
-      radius:6,
-      color:d.color,
-      fillColor:d.color,
-      fillOpacity:0.9,
-      weight:2
-    }).addTo(map).bindPopup('<b>'+d.name+'</b><br/>'+p.name+'<br/>'+p.note);
-  });
-
+  /* 先画虚线连接（按顺序） */
   if (d.points.length > 1) {
     L.polyline(d.points.map(function(p){return [p.lat, p.lng];}), {
       color:d.color,
@@ -139,6 +141,12 @@ Object.keys(days).forEach(function(k){
       opacity:0.75
     }).addTo(map);
   }
+
+  /* 再画带序号的标记 */
+  d.points.forEach(function(p, i){
+    numberedMarker(p.lat, p.lng, d.color, i+1,
+      '<b>'+d.name+' 第'+(i+1)+'站</b><br/>'+p.name+'<br/>'+p.note, 12);
+  });
 });
 
 /* ========== 图例 ========== */
@@ -153,7 +161,8 @@ legend.onAdd = function(){
     '<i style="background:#e53935"></i>Day1 天坛/前门<br/>'+
     '<i style="background:#43a047"></i>Day2 中轴线<br/>'+
     '<i style="background:#fb8c00"></i>Day3 皇家园林<br/>'+
-    '<i style="background:#8e24aa"></i>Day4 圆明园';
+    '<i style="background:#8e24aa"></i>Day4 圆明园<br/>'+
+    '<span style="color:#333;">圈内数字 = 当天顺序</span>';
   return div;
 };
 
