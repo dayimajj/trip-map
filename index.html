@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>高邮-临沂-北京-杭州 自驾线路图</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+<style>
+  html,body,#map{height:100%;margin:0;}
+  .legend {
+    background:rgba(255,255,255,.92); padding:6px 8px; line-height:1.5;
+    border-radius:4px; box-shadow:0 0 8px rgba(0,0,0,.25);
+    font-size:11px; max-width:150px;
+  }
+  .legend i {
+    width:10px; height:10px; display:inline-block;
+    margin-right:4px; border-radius:50%;
+  }
+  .leaflet-popup-content{font-size:13px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+var map = L.map('map').setView([35.5, 117.5], 6);
+
+/* ===== 高德地图底图 ===== */
+L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+  subdomains: ['1','2','3','4'],
+  maxZoom: 18,
+  attribution: '高德地图'
+}).addTo(map);
+
+/* ========== 去程主干线（蓝） ========== */
+var goTrunk = [
+  {name:"高邮 10.2 20:00 出发", lat:32.785, lng:119.443, note:"满电出发，走 G2 京沪高速"},
+  {name:"临沂 10.2 23:20 入住", lat:35.104, lng:118.356, note:"全季酒店临沂绿爱小镇店，停车充电"},
+  {name:"济南服务区 10.3 12:00", lat:36.68, lng:117.05, note:"国网快充至90%，午餐1小时"},
+  {name:"北京酒店 10.3 16:30", lat:39.86, lng:116.37, note:"南三环自驾友好酒店，带车位充电桩"}
+];
+
+L.polyline(goTrunk.map(p=>[p.lat,p.lng]), {
+  color:'#1e88e5', weight:5, opacity:0.85
+}).addTo(map);
+
+goTrunk.forEach(p => {
+  L.circleMarker([p.lat, p.lng], {
+    radius:7, color:'#1e88e5', fillColor:'#fff',
+    fillOpacity:1, weight:3
+  }).addTo(map).bindPopup('<b>'+p.name+'</b><br/>'+p.note);
+});
+
+/* ========== 返程主干线（紫） ========== */
+var backTrunk = [
+  {name:"北京 10.6 08:30 出发", lat:39.86, lng:116.37, note:"圆明园出来后满电启程"},
+  {name:"沧州孟村服务区 10:30", lat:38.05, lng:117.10, note:"第一次充电，特斯拉超充20分钟"},
+  {name:"济南服务区 13:20", lat:36.68, lng:117.05, note:"第二次充电+午餐，40分钟"},
+  {name:"淮安服务区 17:30", lat:33.55, lng:119.02, note:"第三次充电至85%，20分钟"},
+  {name:"宜兴服务区 21:20", lat:31.34, lng:119.82, note:"第四次充电+晚餐，30分钟"},
+  {name:"杭州 10.6 23:50", lat:30.274, lng:120.155, note:"目标24点前抵达"}
+];
+
+L.polyline(backTrunk.map(p=>[p.lat,p.lng]), {
+  color:'#8e24aa', weight:5, opacity:0.85, dashArray:'10,6'
+}).addTo(map);
+
+backTrunk.forEach(p => {
+  L.circleMarker([p.lat, p.lng], {
+    radius:7, color:'#8e24aa', fillColor:'#fff',
+    fillOpacity:1, weight:3
+  }).addTo(map).bindPopup('<b>'+p.name+'</b><br/>'+p.note);
+});
+
+/* ========== 每日市区景点 ========== */
+var days = {
+  day1: {
+    color:'#e53935',
+    name:'Day1 10.3 北京',
+    points:[
+      {name:"天坛公园 17:00", lat:39.882, lng:116.406, note:"联票34元，约2h，夕阳祈年殿"},
+      {name:"前门大街 傍晚", lat:39.899, lng:116.397, note:"老字号、小吃"},
+      {name:"大栅栏 傍晚", lat:39.895, lng:116.392, note:"晚餐推荐前门烤鸭店"}
+    ]
+  },
+  day2: {
+    color:'#43a047',
+    name:'Day2 10.4 中轴线',
+    points:[
+      {name:"天安门广场 06:10 升旗", lat:39.905, lng:116.397, note:"提前7天预约，提前1小时安检"},
+      {name:"故宫 08:30", lat:39.916, lng:116.397, note:"提前7天20:00抢票，约3.5h"},
+      {name:"景山公园 14:00", lat:39.925, lng:116.396, note:"万春亭俯瞰紫禁城"},
+      {name:"什刹海 傍晚", lat:39.937, lng:116.389, note:"沿后海散步"},
+      {name:"烟袋斜街 傍晚", lat:39.940, lng:116.395, note:"老北京胡同"},
+      {name:"后海铜锅涮肉 晚餐", lat:39.937, lng:116.386, note:"老北京铜锅涮肉"}
+    ]
+  },
+  day3: {
+    color:'#fb8c00',
+    name:'Day3 10.5 皇家园林+王府古寺',
+    points:[
+      {name:"颐和园 08:00", lat:39.999, lng:116.275, note:"东宫门→长廊→佛香阁→十七孔桥，约3.5h"},
+      {name:"西苑 12:00 午餐", lat:39.995, lng:116.280, note:"北宫门/西苑附近"},
+      {name:"雍和宫 13:30", lat:39.947, lng:116.417, note:"需预约，约1.5h"},
+      {name:"恭王府 15:30", lat:39.935, lng:116.383, note:"需预约，16:10停止入馆，时间很紧"},
+      {name:"簋街 晚餐", lat:39.941, lng:116.434, note:"北京烧烤、小龙虾地标"}
+    ]
+  },
+  day4: {
+    color:'#8e24aa',
+    name:'Day4 10.6 圆明园 + 返程',
+    points:[
+      {name:"圆明园 07:00", lat:40.008, lng:116.298, note:"开园即入，直奔西洋楼大水法，约1.5h"},
+      {name:"08:30 出园出发返程", lat:40.008, lng:116.298, note:"上 G2 京沪高速向南"}
+    ]
+  }
+};
+
+Object.keys(days).forEach(function(k){
+  var d = days[k];
+
+  d.points.forEach(function(p){
+    L.circleMarker([p.lat, p.lng], {
+      radius:6,
+      color:d.color,
+      fillColor:d.color,
+      fillOpacity:0.9,
+      weight:2
+    }).addTo(map).bindPopup('<b>'+d.name+'</b><br/>'+p.name+'<br/>'+p.note);
+  });
+
+  if (d.points.length > 1) {
+    L.polyline(d.points.map(function(p){return [p.lat, p.lng];}), {
+      color:d.color,
+      weight:2,
+      dashArray:'5,5',
+      opacity:0.75
+    }).addTo(map);
+  }
+});
+
+/* ========== 图例 ========== */
+var legend = L.control({position:'bottomright'});
+
+legend.onAdd = function(){
+  var div = L.DomUtil.create('div','legend');
+  div.innerHTML =
+    '<b>图例</b><br/>'+
+    '<i style="background:#1e88e5"></i>去程主干线<br/>'+
+    '<i style="background:#8e24aa"></i>返程主干线<br/>'+
+    '<i style="background:#e53935"></i>Day1 天坛/前门<br/>'+
+    '<i style="background:#43a047"></i>Day2 中轴线<br/>'+
+    '<i style="background:#fb8c00"></i>Day3 皇家园林<br/>'+
+    '<i style="background:#8e24aa"></i>Day4 圆明园';
+  return div;
+};
+
+legend.addTo(map);
+
+/* 自动缩放到全部主干线 */
+var allCoords = goTrunk.concat(backTrunk).map(p=>[p.lat,p.lng]);
+map.fitBounds(L.latLngBounds(allCoords), {padding:[30,30]});
+</script>
+</body>
+</html>
