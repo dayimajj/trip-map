@@ -10,7 +10,7 @@
   .legend {
     background:rgba(255,255,255,.92); padding:6px 8px; line-height:1.5;
     border-radius:4px; box-shadow:0 0 8px rgba(0,0,0,.25);
-    font-size:11px; max-width:160px;
+    font-size:11px; max-width:170px;
   }
   .legend i {
     width:10px; height:10px; display:inline-block;
@@ -98,26 +98,26 @@ var days = {
   },
   day2: {
     color:'#43a047',
-    name:'Day2 10.4 中轴线',
+    name:'Day2 10.4 中轴线 + 什刹海',
     points:[
       {name:"天安门广场 06:10 升旗", lat:39.905, lng:116.397, note:"提前7天预约，提前1小时安检"},
       {name:"毛主席纪念堂 08:00 快速瞻仰", lat:39.901, lng:116.397, note:"需提前预约，周一闭馆，不能带包/相机，有寄存处；快速瞻仰约30分钟，8:40前出来"},
       {name:"故宫 09:30", lat:39.916, lng:116.397, note:"提前7天20:00抢票，上午场入内即可，游览压缩至2.5～3h"},
       {name:"景山公园 14:00", lat:39.925, lng:116.396, note:"万春亭俯瞰紫禁城"},
-      {name:"什刹海 傍晚", lat:39.937, lng:116.389, note:"沿后海散步"},
+      {name:"恭王府 15:30", lat:39.935, lng:116.383, note:"需预约，16:10停止入馆，务必15:30前到，约1.5h"},
+      {name:"什刹海 傍晚", lat:39.937, lng:116.389, note:"沿后海散步，与恭王府步行可达"},
       {name:"烟袋斜街 傍晚", lat:39.940, lng:116.395, note:"老北京胡同"},
       {name:"后海铜锅涮肉 晚餐", lat:39.937, lng:116.386, note:"老北京铜锅涮肉"}
     ]
   },
   day3: {
     color:'#fb8c00',
-    name:'Day3 10.5 皇家园林+王府古寺',
+    name:'Day3 10.5 颐和园 + 雍和宫',
     points:[
       {name:"颐和园 08:00", lat:39.999, lng:116.275, note:"东宫门→长廊→佛香阁→十七孔桥，约3.5h"},
       {name:"西苑 12:00 午餐", lat:39.995, lng:116.280, note:"北宫门/西苑附近"},
       {name:"雍和宫 13:30", lat:39.947, lng:116.417, note:"需预约，约1.5h"},
-      {name:"恭王府 15:30", lat:39.935, lng:116.383, note:"需预约，16:10停止入馆，时间很紧"},
-      {name:"簋街 晚餐", lat:39.941, lng:116.434, note:"北京烧烤、小龙虾地标"}
+      {name:"簋街 晚餐", lat:39.941, lng:116.434, note:"距雍和宫1公里，北京烧烤、小龙虾地标"}
     ]
   }
 };
@@ -150,8 +150,8 @@ legend.onAdd = function(){
     '<i style="background:#1e88e5"></i>去程主干线<br/>'+
     '<i style="background:#8e24aa"></i>返程主干线（含10.6圆明园）<br/>'+
     '<i style="background:#e53935"></i>Day1 天坛/前门<br/>'+
-    '<i style="background:#43a047"></i>Day2 中轴线<br/>'+
-    '<i style="background:#fb8c00"></i>Day3 皇家园林<br/>'+
+    '<i style="background:#43a047"></i>Day2 中轴线+什刹海<br/>'+
+    '<i style="background:#fb8c00"></i>Day3 颐和园+雍和宫<br/>'+
     '<span style="color:#333;">圈内数字 = 顺序</span>';
   return div;
 };
